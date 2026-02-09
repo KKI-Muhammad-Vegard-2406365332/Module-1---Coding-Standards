@@ -22,9 +22,7 @@ public class ProductRepository {
         return productData.iterator();
     }
 
-    public void deleteById(String productId) {
-        productData.removeIf(
-                product -> product.getProductId().equals(productId)
-        );
+    public void deleteById(String id) {
+        productData.removeIf(p -> p.getProductId().equals(id));
     }
 }
