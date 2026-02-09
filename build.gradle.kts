@@ -1,3 +1,8 @@
+val seleniumJavaVersion = "4.14.1"
+val seleniumJupiterVersion = "5.0.1"
+val webdrivermanagerVersion = "5.6.3"
+val junitJupiterVersion = "5.9.1"
+
 plugins {
     java
     id("org.springframework.boot") version "3.5.10"
@@ -61,9 +66,4 @@ tasks.register<Test>("functionalTest") {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
-
-val seleniumJavaVersion = "4.14.1"
-val seleniumJupiterVersion = "5.0.1"
-val webdrivermanagerVersion = "5.6.3"
-val junitJupiterVersion = "5.9.1"
 
