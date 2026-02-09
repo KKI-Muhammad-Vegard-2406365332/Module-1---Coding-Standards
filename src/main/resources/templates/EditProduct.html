@@ -8,21 +8,19 @@
 <h2>Edit Product</h2>
 
 <form th:action="@{/product/edit}" th:object="${product}" method="post">
+    <input type="hidden" th:field="*{productId}" />
 
-    <label>ID</label>
-    <input type="text" th:field="*{productId}" readonly />
-    <br/>
+    <div>
+        <label>Name</label>
+        <input type="text" th:field="*{productName}" />
+    </div>
 
-    <label>Name</label>
-    <input type="text" th:field="*{productName}" />
-    <br/>
-
-    <label>Quantity</label>
-    <input type="number" th:field="*{productQuantity}" />
-    <br/>
+    <div>
+        <label>Quantity</label>
+        <input type="number" th:field="*{productQuantity}" />
+    </div>
 
     <button type="submit">Update</button>
-
 </form>
 
 </body>
