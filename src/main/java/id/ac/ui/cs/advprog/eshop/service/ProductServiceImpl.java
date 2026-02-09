@@ -31,11 +31,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String productId) {
-        return productRepository.findById(productId);
+        Iterator<Product> iterator = productRepository.findAll();
+        while (iterator.hasNext()) {
+            Product p = iterator.next();
+            if (p.getProductId().equals(productId)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     @Override
     public void update(Product product) {
-        productRepository.update(product);
+        Product existing = findById(product.getProductId());
+        if (existing != null) {
+            existing.setProductName(product.getProductName());
+            existing.setProductQuantity(product.getProductQuantity());
+        }
     }
 }
