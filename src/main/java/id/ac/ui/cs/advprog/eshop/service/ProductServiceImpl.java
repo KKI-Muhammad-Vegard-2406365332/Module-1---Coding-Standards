@@ -43,10 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void update(Product product) {
-        Product existing = findById(product.getProductId());
-        if (existing != null) {
-            existing.setProductName(product.getProductName());
-            existing.setProductQuantity(product.getProductQuantity());
-        }
+        productRepository.update(product);
+    }
     }
 }
