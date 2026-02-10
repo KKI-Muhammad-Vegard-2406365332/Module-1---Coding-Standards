@@ -59,8 +59,8 @@ Unit tests are added to verify the model and repository implementation using JUn
 
 ---
 
-### Reflection 2
-## 1. Unit Testing and Code Coverage
+## Reflection 2
+### 1. Unit Testing and Code Coverage
 
 After writing the unit tests, I felt more confident about the correctness of my code. Testing both positive cases (valid edit and delete) and negative cases (editing or deleting non-existing products) helped me understand how the system behaves in different situations.
 
@@ -68,13 +68,13 @@ There is no fixed number of unit tests required for a class. What matters is tha
 
 During this process, I encountered several issues related to dependency mismatches between JUnit, Selenium, and Gradle, which caused tests to fail initially. Fixing these problems taught me how important proper dependency alignment is when working with automated tests.
 
-## 2. Functional Test Cleanliness
+### 2. Functional Test Cleanliness
 
 If I were asked to create another functional test similar to CreateProductFunctionalTest, reusing the same setup code could reduce code cleanliness. Duplicating WebDriver setup and configuration in multiple test classes makes the code harder to maintain.
 
 To improve code quality, common setup logic should be reused using shared setup methods or a base test class. This keeps functional tests focused on their purpose and makes the test code cleaner and easier to maintain.
 
-## Additional Challenges
+### Additional Challenges
 
 I also faced Git merging issues, including accidentally merging the main branch into a feature branch. This required reverting the merge and fixing the branch history. From this, I learned to be more careful with merge directions and to verify branch status before merging.
 
@@ -85,7 +85,7 @@ I also faced Git merging issues, including accidentally merging the main branch 
 - Added Edit Product feature using `findById` in the `edit-product` branch.
 - Added Delete Product feature using `deleteById` in the `delete-product` branch.
 
-## v0.2.0 – Testing and Stability Improvements
+### v0.2.0 – Testing and Stability Improvements
 Added unit tests for:
 - Product model
 - Product repository
@@ -96,7 +96,7 @@ Added unit tests for:
 - Added functional tests to simulate user interactions (Create Product flow).
 - Improved test reliability by fixing failing edge cases.
 
-## v0.2.1 – Maintenance and Lessons Learned
+### v0.2.1 – Maintenance and Lessons Learned
 - Fixed accidental branch merge issues (e.g. merging main into feature branches).
 - Reverted unintended merges and cleaned up branch history.
 - Learned to verify branch direction and merge targets before merging.
