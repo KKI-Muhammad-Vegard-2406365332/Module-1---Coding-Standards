@@ -45,5 +45,4 @@ public class ProductServiceImpl implements ProductService {
     public void update(Product product) {
         productRepository.update(product);
     }
-    }
 }
