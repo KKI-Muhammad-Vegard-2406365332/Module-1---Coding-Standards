@@ -77,6 +77,10 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    reports {
+        xml.required.set(true) // for sonar to read the report
+        html.required.set(true)
+    }
 }
 
 sonar {
