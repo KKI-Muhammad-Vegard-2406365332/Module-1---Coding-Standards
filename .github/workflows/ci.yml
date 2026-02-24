@@ -19,5 +19,7 @@ jobs:
           java-version: "21"
           cache: "gradle"
 
-      - name: Run unit tests
-        run: ./gradlew test
+      - name: Run unit tests and SonarCloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew test jacocoTestReport sonar --info

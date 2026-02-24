@@ -3,6 +3,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "3.5.10"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -76,4 +77,14 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "KKI-Muhammad-Vegard-2406365332_Module-1---Coding-Standards")
+        property("sonar.organization", "kki-muhammad-vegard-2406365332")
+        property("sonar.host.url", "https://sonarcloud.io")
+        // tell sonarcloud to find the 100% jacoco reports
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
+    }
 }

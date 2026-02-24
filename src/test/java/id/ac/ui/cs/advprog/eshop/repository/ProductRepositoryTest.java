@@ -70,4 +70,90 @@ class ProductRepositoryTest {
         assertFalse(productIterator.hasNext());
     }
 
+    @Test
+    void testFindById_ProductExists() {
+        Product product = new Product();
+        product.setProductName("Test Find");
+        product.setProductQuantity(10);
+        Product savedProduct = productRepository.create(product);
+
+        Product foundProduct = productRepository.findById(savedProduct.getProductId());
+
+        assertNotNull(foundProduct);
+        assertEquals(savedProduct.getProductId(), foundProduct.getProductId());
+        assertEquals(savedProduct.getProductName(), foundProduct.getProductName());
+        assertEquals(savedProduct.getProductQuantity(), foundProduct.getProductQuantity());
+    }
+
+    @Test
+    void testFindById_ProductDoesNotExist() {
+        Product product = new Product();
+        product.setProductName("Real Product");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        Product foundProduct = productRepository.findById("fake-id");
+
+        assertNull(foundProduct);
+    }
+
+    @Test
+    void testUpdate_ProductExists() {
+        Product product = new Product();
+        product.setProductName("Old Name");
+        product.setProductQuantity(10);
+        Product savedProduct = productRepository.create(product);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId(savedProduct.getProductId()); // Match the generated ID
+        updatedProduct.setProductName("New Name");
+        updatedProduct.setProductQuantity(20);
+
+        productRepository.update(updatedProduct);
+
+        Product foundProduct = productRepository.findById(savedProduct.getProductId());
+        assertNotNull(foundProduct);
+        assertEquals("New Name", foundProduct.getProductName());
+        assertEquals(20, foundProduct.getProductQuantity());
+    }
+
+    @Test
+    void testUpdate_ProductDoesNotExist() {
+        Product fakeProduct = new Product();
+        fakeProduct.setProductId("fake-id");
+        fakeProduct.setProductName("Fake Name");
+        fakeProduct.setProductQuantity(99);
+
+        // This should fall through the loop without throwing an error
+        productRepository.update(fakeProduct);
+
+        Product foundProduct = productRepository.findById("fake-id");
+        assertNull(foundProduct);
+    }
+
+    @Test
+    void testDeleteById_ProductExists() {
+        Product product = new Product();
+        product.setProductName("To Be Deleted");
+        product.setProductQuantity(10);
+        Product savedProduct = productRepository.create(product);
+
+        // Verify it exists first
+        assertNotNull(productRepository.findById(savedProduct.getProductId()));
+
+        // Delete it
+        productRepository.deleteById(savedProduct.getProductId());
+
+        // Verify it is gone
+        assertNull(productRepository.findById(savedProduct.getProductId()));
+    }
+
+    @Test
+    void testDeleteById_ProductDoesNotExist() {
+        // This should fall through removeIf without throwing an error
+        productRepository.deleteById("fake-id");
+
+        assertNull(productRepository.findById("fake-id"));
+    }
+
 }
