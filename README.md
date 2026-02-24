@@ -1,5 +1,10 @@
 # eShop Application
 
+<a href="https://religious-diane-marie-kki-muhammad-vegard-2406365332-9ed40735.koyeb.app/" target="_blank">Live Application (Koyeb)</a>
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=KKI-Muhammad-Vegard-2406365332_Module-1---Coding-Standards&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=KKI-Muhammad-Vegard-2406365332_Module-1---Coding-Standards)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=KKI-Muhammad-Vegard-2406365332_Module-1---Coding-Standards&metric=coverage)](https://sonarcloud.io/summary/new_code?id=KKI-Muhammad-Vegard-2406365332_Module-1---Coding-Standards)
+
 ## Overview
 This project is a simple eShop application built using Spring Boot.
 It demonstrates basic CRUD features and applies MVC architecture and clean coding practices.
@@ -78,6 +83,18 @@ To improve code quality, common setup logic should be reused using shared setup 
 
 I also faced Git merging issues, including accidentally merging the main branch into a feature branch. This required reverting the merge and fixing the branch history. From this, I learned to be more careful with merge directions and to verify branch status before merging.
 
+---
+## Reflection 3 - Module 2
+**1. List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.**
+During the exercise, I encountered and fixed several code quality issues (Code Smells) flagged by SonarCloud:
+* **Wildcard Imports:** SonarCloud flagged the use of `import org.springframework.web.bind.annotation.*;` in my `ProductController`. My strategy to fix this was to replace the wildcard with explicit, individual imports (e.g., `@GetMapping`, `@PostMapping`). This is a clean code practice that prevents namespace pollution and reduces the risk of class name conflicts.
+* **Field Injection:** SonarCloud flagged the use of `@Autowired` directly on the `ProductService` field. My strategy was to refactor this to use **Constructor Injection**. I changed the field to `private final ProductService service;` and created an `@Autowired` constructor. This is a Spring Boot best practice because it allows the class state to be immutable, makes the code easier to unit test, and ensures the dependency is never null upon initialization.
+
+**2. Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!**
+Yes, I believe the current implementation fully meets the definitions of both Continuous Integration (CI) and Continuous Deployment (CD). 
+For **Continuous Integration**, our GitHub Actions workflows (`ci.yml` and `sonarcloud.yml`) automatically trigger on every push and pull request. These workflows compile the code, run the full suite of unit and functional tests, measure code coverage using JaCoCo, and perform static code analysis via SonarCloud to ensure that only secure, high-quality code gets integrated. 
+For **Continuous Deployment**, the repository is integrated with Koyeb using a pull-based approach. Whenever code passes the CI pipeline and is pushed to the `main` branch, Koyeb automatically detects the changes, builds the application using the multi-stage `Dockerfile`, and deploys the new version directly to the live production server without requiring any manual intervention.
+
 ## Changelog / Notes
 ### v0.1.0
 - Implemented Create and List Product features in the `list-product` branch.
@@ -103,3 +120,10 @@ Added unit tests for:
 - Improved commit discipline and branch workflow awareness.
 - Configured Gradle for JUnit 5 and separated unit and functional tests.
 - Added unit tests for model and repository layers.
+
+### v0.3.0 – CI/CD, Code Quality, and PaaS Deployment (Module 2)
+- **Continuous Integration (CI):** Implemented GitHub Actions workflows (`ci.yml` and `sonarcloud.yml`) to automatically run tests and security scans on every push and pull request.
+- **Code Coverage:** Added missing unit tests for the application's main method, service layer, and repository to achieve a **100% JaCoCo test coverage** score.
+- **Static Code Analysis:** Integrated **SonarCloud** to continuously monitor code quality. Resolved several "Code Smells," including replacing wildcard imports with explicit imports and refactoring field injection to constructor injection.
+- **Continuous Deployment (CD):** Created a multi-stage `Dockerfile` to containerize the Spring Boot application and successfully automated deployment to **Koyeb** using a pull-based strategy.
+- **Documentation:** Added dynamic SonarCloud Quality Gate and Coverage badges to the repository README.
