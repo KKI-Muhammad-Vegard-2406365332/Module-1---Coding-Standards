@@ -44,35 +44,31 @@ class ProductServiceImplTest {
 
     @Test
     void testFindById_ProductFound() {
-        // Your ProductServiceImpl loops through findAll() to find the ID
         Product product = new Product();
         product.setProductId("1");
         product.setProductName("Target Product");
 
-        List<Product> productList = new ArrayList<>();
-        productList.add(product);
-
-        Mockito.when(productRepository.findAll()).thenReturn(productList.iterator());
+        // Mock the findById method instead of findAll
+        Mockito.when(productRepository.findById("1")).thenReturn(product);
 
         Product result = productService.findById("1");
         assertNotNull(result);
         assertEquals("Target Product", result.getProductName());
+
+        // Optional: Verify that the repository's findById was indeed called
+        Mockito.verify(productRepository).findById("1");
     }
 
     @Test
     void testFindById_ProductNotFound() {
-        // Mock the findAll iterator to return a list that doesn't match the ID
-        Product product = new Product();
-        product.setProductId("1");
+        // Mock the findById method to return null when searching for "2"
+        Mockito.when(productRepository.findById("2")).thenReturn(null);
 
-        List<Product> productList = new ArrayList<>();
-        productList.add(product);
-
-        Mockito.when(productRepository.findAll()).thenReturn(productList.iterator());
-
-        // We search for "2" which is not in the list
         Product result = productService.findById("2");
         assertNull(result);
+
+        // Optional: Verify that the repository's findById was indeed called
+        Mockito.verify(productRepository).findById("2");
     }
 
     @Test

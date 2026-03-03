@@ -91,16 +91,51 @@ During the exercise, I encountered and fixed several code quality issues (Code S
 * **Field Injection:** SonarCloud flagged the use of `@Autowired` directly on the `ProductService` field. My strategy was to refactor this to use **Constructor Injection**. I changed the field to `private final ProductService service;` and created an `@Autowired` constructor. This is a Spring Boot best practice because it allows the class state to be immutable, makes the code easier to unit test, and ensures the dependency is never null upon initialization.
 
 **2. Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!**
-Yes, I believe the current implementation fully meets the definitions of both Continuous Integration (CI) and Continuous Deployment (CD). 
-For **Continuous Integration**, our GitHub Actions workflows (`ci.yml` and `sonarcloud.yml`) automatically trigger on every push and pull request. These workflows compile the code, run the full suite of unit and functional tests, measure code coverage using JaCoCo, and perform static code analysis via SonarCloud to ensure that only secure, high-quality code gets integrated. 
+Yes, I believe the current implementation fully meets the definitions of both Continuous Integration (CI) and Continuous Deployment (CD).
+For **Continuous Integration**, our GitHub Actions workflows (`ci.yml` and `sonarcloud.yml`) automatically trigger on every push and pull request. These workflows compile the code, run the full suite of unit and functional tests, measure code coverage using JaCoCo, and perform static code analysis via SonarCloud to ensure that only secure, high-quality code gets integrated.
 For **Continuous Deployment**, the repository is integrated with Koyeb using a pull-based approach. Whenever code passes the CI pipeline and is pushed to the `main` branch, Koyeb automatically detects the changes, builds the application using the multi-stage `Dockerfile`, and deploys the new version directly to the live production server without requiring any manual intervention.
 
+---
+## Reflection 4 - Module 3 (SOLID Principles)
+**1. Explain what principles you apply to your project!**
+In this project, I applied several SOLID principles to refactor the initial codebase:
+* **Single Responsibility Principle (SRP):** I separated `ProductController` and `CarController` into their own distinct files. Previously, they were both housed inside `ProductController.java`.
+* **Liskov Substitution Principle (LSP):** I removed the `extends ProductController` inheritance from `CarController`. A `CarController` handles entirely different models and logic, meaning it cannot logically substitute a `ProductController` without breaking the application's intended behavior.
+* **Dependency Inversion Principle (DIP):** In the `CarController`, I changed the injected dependency from the concrete class `CarServiceImpl` to the interface `CarService`.
+
+**2. Explain the advantages of applying SOLID principles to your project with examples.**
+Applying SOLID principles makes the codebase much more maintainable, scalable, and testable.
+* **Example of SRP Advantage:** By separating the `CarController` and `ProductController`, if I need to add a new feature specifically for cars (like filtering by engine type), I can modify the `CarController` without any risk of accidentally introducing bugs into the `Product` logic.
+* **Example of DIP Advantage:** By depending on the `CarService` interface rather than `CarServiceImpl`, the code is loosely coupled. If I later decide to create a `PremiumCarServiceImpl` that fetches data from an external API, I can easily inject it without changing the controller's code. It also makes unit testing much easier because I can inject a mock interface.
+
+**3. Explain the disadvantages of not applying SOLID principles to your project with examples.**
+Failing to apply SOLID principles leads to code that is rigid, fragile, and difficult to understand or test.
+* **Example of SRP Disadvantage:** If `ProductController` and `CarController` remained in the same file, the file would quickly become a massive "God Object." Multiple developers trying to work on Cars and Products simultaneously would constantly run into merge conflicts.
+* **Example of LSP Disadvantage:** When `CarController` extended `ProductController`, it inherited methods it didn't need or shouldn't expose. If someone passed a `CarController` into a function expecting a `ProductController`, it could result in unexpected behavior or runtime crashes.
+
+---
 ## Changelog / Notes
-### v0.1.0
-- Implemented Create and List Product features in the `list-product` branch.
-- Merged the `list-product` branch into `main` after verification.
-- Added Edit Product feature using `findById` in the `edit-product` branch.
-- Added Delete Product feature using `deleteById` in the `delete-product` branch.
+### v0.4.0 – SOLID Principles (Module 3)
+- **SRP Applied:** Extracted `CarController` from `ProductController.java` into its own dedicated file.
+- **LSP Applied:** Removed incorrect inheritance (`extends ProductController`) from `CarController`.
+- **DIP Applied:** Refactored `CarController` to depend on the `CarService` interface rather than the concrete `CarServiceImpl`.
+- Cleaned up redundant logic in `ProductServiceImpl` and removed dead code in `CarRepository`.
+- Updated test suite to correctly mock repository behaviors following refactoring.
+
+### v0.3.0 – CI/CD, Code Quality, and PaaS Deployment (Module 2)
+- **Continuous Integration (CI):** Implemented GitHub Actions workflows (`ci.yml` and `sonarcloud.yml`) to automatically run tests and security scans on every push and pull request.
+- **Code Coverage:** Added missing unit tests for the application's main method, service layer, and repository to achieve a **100% JaCoCo test coverage** score.
+- **Static Code Analysis:** Integrated **SonarCloud** to continuously monitor code quality. Resolved several "Code Smells," including replacing wildcard imports with explicit imports and refactoring field injection to constructor injection.
+- **Continuous Deployment (CD):** Created a multi-stage `Dockerfile` to containerize the Spring Boot application and successfully automated deployment to **Koyeb** using a pull-based strategy.
+- **Documentation:** Added dynamic SonarCloud Quality Gate and Coverage badges to the repository README.
+
+### v0.2.1 – Maintenance and Lessons Learned
+- Fixed accidental branch merge issues (e.g. merging main into feature branches).
+- Reverted unintended merges and cleaned up branch history.
+- Learned to verify branch direction and merge targets before merging.
+- Improved commit discipline and branch workflow awareness.
+- Configured Gradle for JUnit 5 and separated unit and functional tests.
+- Added unit tests for model and repository layers.
 
 ### v0.2.0 – Testing and Stability Improvements
 Added unit tests for:
@@ -113,17 +148,8 @@ Added unit tests for:
 - Added functional tests to simulate user interactions (Create Product flow).
 - Improved test reliability by fixing failing edge cases.
 
-### v0.2.1 – Maintenance and Lessons Learned
-- Fixed accidental branch merge issues (e.g. merging main into feature branches).
-- Reverted unintended merges and cleaned up branch history.
-- Learned to verify branch direction and merge targets before merging.
-- Improved commit discipline and branch workflow awareness.
-- Configured Gradle for JUnit 5 and separated unit and functional tests.
-- Added unit tests for model and repository layers.
-
-### v0.3.0 – CI/CD, Code Quality, and PaaS Deployment (Module 2)
-- **Continuous Integration (CI):** Implemented GitHub Actions workflows (`ci.yml` and `sonarcloud.yml`) to automatically run tests and security scans on every push and pull request.
-- **Code Coverage:** Added missing unit tests for the application's main method, service layer, and repository to achieve a **100% JaCoCo test coverage** score.
-- **Static Code Analysis:** Integrated **SonarCloud** to continuously monitor code quality. Resolved several "Code Smells," including replacing wildcard imports with explicit imports and refactoring field injection to constructor injection.
-- **Continuous Deployment (CD):** Created a multi-stage `Dockerfile` to containerize the Spring Boot application and successfully automated deployment to **Koyeb** using a pull-based strategy.
-- **Documentation:** Added dynamic SonarCloud Quality Gate and Coverage badges to the repository README.
+### v0.1.0
+- Implemented Create and List Product features in the `list-product` branch.
+- Merged the `list-product` branch into `main` after verification.
+- Added Edit Product feature using `findById` in the `edit-product` branch.
+- Added Delete Product feature using `deleteById` in the `delete-product` branch.
