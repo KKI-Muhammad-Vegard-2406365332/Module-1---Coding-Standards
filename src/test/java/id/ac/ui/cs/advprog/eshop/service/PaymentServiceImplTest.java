@@ -115,8 +115,12 @@ class PaymentServiceImplTest {
 
     @Test
     void testSetStatusSuccess() {
-        Payment payment = payments.get(0);
-        doReturn(payment).when(paymentRepository).save(any(Payment.class));
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("voucherCode", "ESHOP1234ABC5678");
+
+        doReturn(null).when(paymentRepository).save(any(Payment.class));
+
+        Payment payment = paymentService.addPayment(order, "VOUCHER_CODE", paymentData);
 
         Payment result = paymentService.setStatus(payment, "SUCCESS");
         assertEquals("SUCCESS", result.getStatus());
@@ -125,8 +129,12 @@ class PaymentServiceImplTest {
 
     @Test
     void testSetStatusRejected() {
-        Payment payment = payments.get(0);
-        doReturn(payment).when(paymentRepository).save(any(Payment.class));
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("voucherCode", "ESHOP1234ABC5678");
+
+        doReturn(null).when(paymentRepository).save(any(Payment.class));
+
+        Payment payment = paymentService.addPayment(order, "VOUCHER_CODE", paymentData);
 
         Payment result = paymentService.setStatus(payment, "REJECTED");
         assertEquals("REJECTED", result.getStatus());

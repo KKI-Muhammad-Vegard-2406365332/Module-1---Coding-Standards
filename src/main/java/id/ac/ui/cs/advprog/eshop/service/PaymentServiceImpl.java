@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -15,23 +16,38 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    private Map<String, Order> paymentOrderMap = new java.util.HashMap<>();
+
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
-        return null;
+        Payment payment = new Payment(UUID.randomUUID().toString(), method, paymentData);
+        paymentOrderMap.put(payment.getId(), order);
+        paymentRepository.save(payment);
+        return payment;
     }
 
     @Override
     public Payment setStatus(Payment payment, String status) {
-        return null;
+        payment.setStatus(status);
+        Order order = paymentOrderMap.get(payment.getId());
+
+        if ("SUCCESS".equals(status)) {
+            order.setStatus("SUCCESS");
+        } else if ("REJECTED".equals(status)) {
+            order.setStatus("FAILED");
+        }
+
+        paymentRepository.save(payment);
+        return payment;
     }
 
     @Override
     public Payment getPayment(String paymentId) {
-        return null;
+        return paymentRepository.findById(paymentId);
     }
 
     @Override
     public List<Payment> getAllPayments() {
-        return null;
+        return paymentRepository.findAll();
     }
 }
