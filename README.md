@@ -114,7 +114,36 @@ Failing to apply SOLID principles leads to code that is rigid, fragile, and diff
 * **Example of LSP Disadvantage:** When `CarController` extended `ProductController`, it inherited methods it didn't need or shouldn't expose. If someone passed a `CarController` into a function expecting a `ProductController`, it could result in unexpected behavior or runtime crashes.
 
 ---
+## Reflection 5 - Module 4 (TDD & Refactoring)
+
+### 1. Reflect based on Percival (2017) proposed self-reflective questions (in "Principles and Best Practice of Testing" submodule, chapter "Evaluating Your Testing Objectives"), whether this TDD flow is useful enough for you or not.
+
+After following the TDD workflow in this tutorial, I found it to be very useful for structuring my development process. By writing tests first, I was forced to think carefully about the expected behavior of each component (Order model, repository, and service) before writing any implementation code. This approach directly supports **correctness**, because the tests act as a specification that my code must satisfy.
+
+In terms of **maintainability**, the tests I wrote helped me refactor with confidence. For example, when I introduced the `OrderStatus` enum to replace hardcoded strings, I could immediately verify that the refactoring did not break any existing behavior. The tests acted as a safety net during the REFACTOR phase.
+
+Regarding **productive workflow**, the RED-GREEN-REFACTOR cycle kept me focused on small, incremental progress. Instead of trying to build everything at once, I worked on one small piece at a time — write a failing test, make it pass, then clean up. This prevented me from overthinking and kept my momentum going. One area I could improve is writing more edge case tests upfront, rather than only thinking of them after implementation.
+
+### 2. Reflect whether your tests have successfully followed F.I.R.S.T. principle or not.
+
+Looking at the tests I created during the tutorial, I believe they mostly follow the F.I.R.S.T. principles:
+
+- **Fast:** My unit tests run quickly because I used Mockito to mock the repository layer in the service tests, avoiding any slow database or external service calls. All 9 service tests complete in under 2 seconds.
+- **Independent/Isolated:** Each test uses `@BeforeEach` to set up fresh test data, so no test depends on the result of another. The use of `@Mock` and `@InjectMocks` ensures that service tests are isolated from the actual repository implementation.
+- **Repeatable:** Since I used test doubles (mocks and stubs) for dependencies, the tests produce the same results every time regardless of external conditions. There is no reliance on databases, network calls, or file systems.
+- **Self-Validating:** Every test uses explicit assertions (`assertEquals`, `assertNull`, `assertThrows`, `assertTrue`) to automatically determine pass or fail. I did not use any `System.out.println` statements for manual verification.
+- **Timely/Thorough:** Following TDD, I wrote all tests before the implementation, which is the definition of "timely." In terms of thoroughness, I covered both happy paths (valid inputs) and unhappy paths (empty products, invalid status, non-existent IDs, case-sensitive author search). One improvement would be to add more boundary value tests, such as testing with `null` inputs.
+
+---
 ## Changelog / Notes
+### v0.5.0 – TDD & Refactoring (Module 4)
+- **TDD Tutorial:** Implemented Order feature (model, repository, service) following the RED-GREEN-REFACTOR cycle.
+- **Order Model:** Created `Order` class with validation for empty products and status checking. Introduced `OrderStatus` enum to replace hardcoded status strings (Refactoring: Replace Type Code with Class).
+- **Order Repository:** Implemented `save` (create/update), `findById`, and `findAllByAuthor` with case-sensitive author matching.
+- **Order Service:** Implemented `createOrder`, `updateStatus`, `findById`, and `findAllByAuthor` with proper error handling using `NoSuchElementException`.
+- **Test Doubles:** Used Mockito (`@Mock`, `@InjectMocks`, `doReturn`, `verify`) to isolate service unit tests from repository dependencies.
+- **Code Quality:** Resolved `UnnecessaryStubbingException` by removing unused mock definitions, adhering to Mockito's strict stubbing policy.
+
 ### v0.4.0 – SOLID Principles (Module 3)
 - **SRP Applied:** Extracted `CarController` from `ProductController.java` into its own dedicated file.
 - **LSP Applied:** Removed incorrect inheritance (`extends ProductController`) from `CarController`.
