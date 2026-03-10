@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +45,7 @@ class OrderTest {
         assertSame(this.products, order.getProducts());
         assertEquals(2, order.getProducts().size());
         assertEquals("Sampo Cap Bambang", order.getProducts().get(0).getProductName());
-        assertEquals("WAITING_PAYMENT", order.getStatus());
+        assertEquals(OrderStatus.WAITING_PAYMENT.getValue(), order.getStatus());
     }
 
     // Happy: Test to create the order with status "SUCCESS"
