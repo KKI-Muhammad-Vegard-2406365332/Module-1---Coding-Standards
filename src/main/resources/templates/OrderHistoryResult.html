@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-2">
+    <h3>Order History for <span th:text="${author}"></span></h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.orderTime}"></td>
+            <td th:text="${order.status}"></td>
+            <td>
+                <a th:href="@{/order/pay/{id}(id=${order.id})}" class="btn btn-success btn-sm">Pay</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/order/history}" class="btn btn-secondary">Back</a>
+</div>
+</body>
+</html>
