@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
-import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
 import lombok.Getter;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class Order {
         this.products = products;
         this.orderTime = orderTime;
         this.author = author;
-        this.status = OrderStatus.WAITING_PAYMENT.getValue();
+        this.status = "WAITING_PAYMENT";
     }
 
     public Order(String id, List<Product> products, Long orderTime, String author, String status) {
@@ -30,7 +29,8 @@ public class Order {
     }
 
     public void setStatus(String status) {
-        if (OrderStatus.contains(status)) {
+        if (status.equals("WAITING_PAYMENT") || status.equals("SUCCESS")
+                || status.equals("FAILED") || status.equals("CANCELLED")) {
             this.status = status;
         }
     }
