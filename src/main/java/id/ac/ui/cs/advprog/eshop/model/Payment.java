@@ -1,6 +1,9 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import lombok.Getter;
+
 import java.util.Map;
 
 @Getter
@@ -18,35 +21,39 @@ public class Payment {
     }
 
     public void setStatus(String status) {
-        if (status.equals("SUCCESS") || status.equals("REJECTED")) {
+        if (PaymentStatus.contains(status)) {
             this.status = status;
         }
     }
 
     private String determineStatus() {
-        if ("VOUCHER_CODE".equals(this.method)) {
+        if (PaymentMethod.VOUCHER_CODE.getValue().equals(this.method)) {
             return validateVoucherCode();
-        } else if ("BANK_TRANSFER".equals(this.method)) {
+        } else if (PaymentMethod.BANK_TRANSFER.getValue().equals(this.method)) {
             return validateBankTransfer();
         }
-        return "REJECTED";
+        return PaymentStatus.REJECTED.getValue();
     }
 
     private String validateVoucherCode() {
         String code = paymentData.get("voucherCode");
-        if (code == null) return "REJECTED";
-        if (code.length() != 16) return "REJECTED";
-        if (!code.startsWith("ESHOP")) return "REJECTED";
+        if (code == null) return PaymentStatus.REJECTED.getValue();
+        if (code.length() != 16) return PaymentStatus.REJECTED.getValue();
+        if (!code.startsWith("ESHOP")) return PaymentStatus.REJECTED.getValue();
+
         long digitCount = code.chars().filter(Character::isDigit).count();
-        if (digitCount < 8) return "REJECTED";
-        return "SUCCESS";
+        if (digitCount < 8) return PaymentStatus.REJECTED.getValue();
+
+        return PaymentStatus.SUCCESS.getValue();
     }
 
     private String validateBankTransfer() {
         String bankName = paymentData.get("bankName");
         String referenceCode = paymentData.get("referenceCode");
-        if (bankName == null || bankName.isEmpty()) return "REJECTED";
-        if (referenceCode == null || referenceCode.isEmpty()) return "REJECTED";
-        return "SUCCESS";
+
+        if (bankName == null || bankName.isEmpty()) return PaymentStatus.REJECTED.getValue();
+        if (referenceCode == null || referenceCode.isEmpty()) return PaymentStatus.REJECTED.getValue();
+
+        return PaymentStatus.SUCCESS.getValue();
     }
 }
