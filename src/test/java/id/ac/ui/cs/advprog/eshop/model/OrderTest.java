@@ -1,0 +1,84 @@
+package id.ac.ui.cs.advprog.eshop.model;
+
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class OrderTest {
+    private List<Product> products;
+
+    @BeforeEach
+    void setUp() {
+        this.products = new ArrayList<>();
+        Product product1 = new Product();
+        product1.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product1.setProductName("Sampo Cap Bambang");
+        product1.setProductQuantity(2);
+        this.products.add(product1);
+
+        Product product2 = new Product();
+        product2.setProductId("a2c62328-4a37-4664-83c7-f32db8620155");
+        product2.setProductName("Sabun Cap Usep");
+        product2.setProductQuantity(1);
+        this.products.add(product2);
+    }
+
+    // Unhappy: Test to create the order with empty products
+    @Test
+    void testCreateOrderEmptyProduct() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b",
+                    new ArrayList<>(), 1708560000L, "Safira Sudrajat");
+        });
+    }
+
+    // Happy: Test to create the order with no status defined
+    @Test
+    void testCreateOrderDefaultStatus() {
+        Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b",
+                this.products, 1708560000L, "Safira Sudrajat");
+        assertSame(this.products, order.getProducts());
+        assertEquals(2, order.getProducts().size());
+        assertEquals("Sampo Cap Bambang", order.getProducts().get(0).getProductName());
+        assertEquals(OrderStatus.WAITING_PAYMENT.getValue(), order.getStatus());
+    }
+
+    // Happy: Test to create the order with status "SUCCESS"
+    @Test
+    void testCreateOrderSuccessStatus() {
+        Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b",
+                this.products, 1708560000L, "Safira Sudrajat", "SUCCESS");
+        assertEquals("SUCCESS", order.getStatus());
+    }
+
+    // Unhappy: Test to create the order with invalid status
+    @Test
+    void testCreateOrderInvalidStatus() {
+        Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b",
+                this.products, 1708560000L, "Safira Sudrajat", "MEOW");
+        assertEquals("WAITING_PAYMENT", order.getStatus());
+    }
+
+    // Happy: Test to edit the order with one of correct status
+    @Test
+    void testSetStatusToSuccess() {
+        Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b",
+                this.products, 1708560000L, "Safira Sudrajat");
+        order.setStatus("SUCCESS");
+        assertEquals("SUCCESS", order.getStatus());
+    }
+
+    // Unhappy: Test to edit the order with invalid status
+    @Test
+    void testSetStatusInvalid() {
+        Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b",
+                this.products, 1708560000L, "Safira Sudrajat");
+        order.setStatus("MEOW");
+        assertEquals("WAITING_PAYMENT", order.getStatus());
+    }
+}
